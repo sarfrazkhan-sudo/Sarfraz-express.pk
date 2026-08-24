@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Admin - Sarfraz Express.pk</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="icon.png">
+    <meta name="theme-color" content="#FF6B00">
+</head>
+<body>
+
+<header>
+    <div class="container">
+        <div class="logo">🛒 Sarfraz Express.pk</div>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="admin.html" class="active">⚙️ Admin</a>
+        </nav>
+        <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+    </div>
+</header>
+
+<div style="padding: 10px 16px;">
+    <button onclick="window.location.href='index.html'" style="background:none;border:none;color:#FF6B00;font-size:16px;cursor:pointer;display:flex;align-items:center;gap:6px;">← Back</button>
+</div>
+
+<section class="admin-panel">
+    <div class="container">
+        <h1>⚙️ Admin Panel</h1>
+        <p>Add, edit, or delete products.</p>
+
+        <div id="adminPasswordForm" class="admin-form">
+            <h2>🔐 Admin Access</h2>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="adminPassword" placeholder="Enter admin password">
+            </div>
+            <button class="btn btn-primary" onclick="verifyAdmin()">🔓 Unlock</button>
+        </div>
+
+        <div id="adminContent" style="display:none;">
+            <div class="admin-form" id="addProductForm">
+                <h2 id="formTitle">➕ Add New Product</h2>
+                
+                <input type="hidden" id="editProductId" value="">
+                
+                <div class="form-group">
+                    <label>Product Name *</label>
+                    <input type="text" id="productName" placeholder="Enter product name">
+                </div>
+
+                <div class="form-group">
+                    <label>Category *</label>
+                    <select id="productCategory">
+                        <option value="consumer-electronics">📱 Consumer Electronics</option>
+                        <option value="phones-telecommunications">📞 Phones & Telecommunications</option>
+                        <option value="computer-office">💻 Computer & Office</option>
+                        <option value="home-appliances">🏠 Home Appliances</option>
+                        <option value="home-improvement">🔧 Home Improvement</option>
+                        <option value="home-garden">🌿 Home & Garden</option>
+                        <option value="furniture">🪑 Furniture</option>
+                        <option value="lights-lighting">💡 Lights & Lighting</option>
+                        <option value="security-protection">🔒 Security & Protection</option>
+                        <option value="automotive">🚗 Automotive</option>
+                        <option value="tools">🔧 Tools</option>
+                        <option value="sports-entertainment">⚽ Sports & Entertainment</option>
+                        <option value="toys-hobbies">🧸 Toys & Hobbies</option>
+                        <option value="office-school">📚 Office & School Supplies</option>
+                        <option value="beauty-health">💄 Beauty & Health</option>
+                        <option value="jewelry-accessories">💍 Jewelry & Accessories</option>
+                        <option value="watches">⌚ Watches</option>
+                        <option value="shoes">👟 Shoes</option>
+                        <option value="luggage-bags">🧳 Luggage & Bags</option>
+                        <option value="underwear">🩲 Underwear</option>
+                        <option value="mother-kids">👶 Mother & Kids</option>
+                        <option value="weddings-events">💒 Weddings & Events</option>
+                        <option value="food">🍕 Food</option>
+                        <option value="fashion">👗 Fashion</option>
+                        <option value="electronic-components">🔌 Electronic Components</option>
+                    </select>
+                </div>
+
+                <!-- ===== PRICE INPUT FIXED ===== -->
+                <div class="form-group">
+                    <label>Original Price *</label>
+                    <input type="number" id="productOriginalPrice" placeholder="e.g., 3008" step="0.01" min="0">
+                    <small>Enter only numbers (e.g., 3008). No commas or PKR.</small>
+                </div>
+
+                <div class="form-group">
+                    <label>Now Price (Optional)</label>
+                    <input type="number" id="productNowPrice" placeholder="e.g., 1143" step="0.01" min="0">
+                    <small>Leave empty if no discount. Enter only numbers.</small>
+                </div>
+
+                <div class="form-group">
+                    <label>Product Images * (Multiple)</label>
+                    <input type="file" id="productImagesInput" accept="image/*" multiple onchange="handleImageUpload(event)">
+                    <small>Select multiple images (hold Ctrl/Cmd to select multiple)</small>
+                    <div id="imagePreview" style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;"></div>
+                    <div id="uploadStatus" style="margin-top:8px; color:#a7a9be; font-size:13px;"></div>
+                </div>
+
+                <div class="form-group">
+                    <label>Affiliate Link *</label>
+                    <input type="text" id="productLink" placeholder="https://www.aliexpress.com/item/...">
+                    <small>Paste your affiliate link here</small>
+                </div>
+
+                <div class="form-group">
+                    <label>Description *</label>
+                    <textarea id="productDescription" rows="3" placeholder="Product description..."></textarea>
+                </div>
+
+                <button class="btn btn-primary" id="addProductBtn" onclick="saveProduct()">✅ Add Product</button>
+                <button class="btn btn-secondary" id="cancelEditBtn" onclick="cancelEdit()" style="display:none; margin-top:8px;">❌ Cancel Edit</button>
+            </div>
+
+            <div class="admin-products">
+                <h2>📦 All Products</h2>
+                <div id="adminProductList"></div>
+            </div>
+
+            <!-- Backup/Restore Buttons -->
+            <div class="admin-actions" style="display:flex; gap:10px; margin:16px 0; flex-wrap:wrap;">
+                <button class="btn btn-secondary" onclick="exportProducts()" style="flex:1;">💾 Backup</button>
+                <button class="btn btn-secondary" onclick="document.getElementById('importInput').click()" style="flex:1;">📂 Restore</button>
+                <input type="file" id="importInput" accept=".json" style="display:none;" onchange="importProducts(event)">
+                <button class="btn btn-danger" onclick="clearAllProducts()" style="flex:1; background:#ff0000; color:white;">🗑️ Clear All</button>
+                <button class="btn btn-secondary" onclick="getStorageInfo()" style="flex:1;">📊 Storage Info</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="script.js"></script>
+</body>
+</html>

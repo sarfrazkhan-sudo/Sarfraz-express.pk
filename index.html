@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Sarfraz Express.pk - Best Deals</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="icon.png">
+    <meta name="theme-color" content="#FF6B00">
+</head>
+<body>
+
+<header>
+    <div class="container">
+        <div class="logo">🛒 Sarfraz Express.pk</div>
+        <div class="header-right">
+            <button class="search-toggle" onclick="toggleSearch()">🔍</button>
+            <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+        </div>
+    </div>
+    <div class="search-bar" id="searchBar" style="display:none;">
+        <div class="container">
+            <input type="text" id="searchInput" placeholder="Search products..." oninput="searchProducts(this.value)">
+            <button class="search-close" onclick="toggleSearch()">✕</button>
+        </div>
+    </div>
+</header>
+
+<!-- Hero -->
+<section class="hero">
+    <div class="container">
+        <h1>🛍️ Best Deals in Pakistan</h1>
+        <p>Discover amazing products at the best prices. Shop smart, save more!</p>
+    </div>
+</section>
+
+<!-- ===== ALL CATEGORIES ===== -->
+<section class="categories">
+    <div class="container">
+        <div class="category-buttons">
+            <button class="cat-btn active" onclick="showCategory('all')">🔥 All</button>
+            <button class="cat-btn" onclick="showCategory('consumer-electronics')">📱 Consumer Electronics</button>
+            <button class="cat-btn" onclick="showCategory('phones-telecommunications')">📞 Phones & Telecom</button>
+            <button class="cat-btn" onclick="showCategory('computer-office')">💻 Computer & Office</button>
+            <button class="cat-btn" onclick="showCategory('home-appliances')">🏠 Home Appliances</button>
+            <button class="cat-btn" onclick="showCategory('home-improvement')">🔧 Home Improvement</button>
+            <button class="cat-btn" onclick="showCategory('home-garden')">🌿 Home & Garden</button>
+            <button class="cat-btn" onclick="showCategory('furniture')">🪑 Furniture</button>
+            <button class="cat-btn" onclick="showCategory('lights-lighting')">💡 Lights & Lighting</button>
+            <button class="cat-btn" onclick="showCategory('security-protection')">🔒 Security & Protection</button>
+            <button class="cat-btn" onclick="showCategory('automotive')">🚗 Automotive</button>
+            <button class="cat-btn" onclick="showCategory('tools')">🔧 Tools</button>
+            <button class="cat-btn" onclick="showCategory('sports-entertainment')">⚽ Sports & Entertainment</button>
+            <button class="cat-btn" onclick="showCategory('toys-hobbies')">🧸 Toys & Hobbies</button>
+            <button class="cat-btn" onclick="showCategory('office-school')">📚 Office & School Supplies</button>
+            <button class="cat-btn" onclick="showCategory('beauty-health')">💄 Beauty & Health</button>
+            <button class="cat-btn" onclick="showCategory('jewelry-accessories')">💍 Jewelry & Accessories</button>
+            <button class="cat-btn" onclick="showCategory('watches')">⌚ Watches</button>
+            <button class="cat-btn" onclick="showCategory('shoes')">👟 Shoes</button>
+            <button class="cat-btn" onclick="showCategory('luggage-bags')">🧳 Luggage & Bags</button>
+            <button class="cat-btn" onclick="showCategory('underwear')">🩲 Underwear</button>
+            <button class="cat-btn" onclick="showCategory('mother-kids')">👶 Mother & Kids</button>
+            <button class="cat-btn" onclick="showCategory('weddings-events')">💒 Weddings & Events</button>
+            <button class="cat-btn" onclick="showCategory('food')">🍕 Food</button>
+            <button class="cat-btn" onclick="showCategory('fashion')">👗 Fashion</button>
+            <button class="cat-btn" onclick="showCategory('electronic-components')">🔌 Electronic Components</button>
+        </div>
+    </div>
+</section>
+
+<!-- Products -->
+<section class="products">
+    <div class="container">
+        <h2 id="categoryTitle">🔥 All Products</h2>
+        <div class="products-grid" id="productsGrid"></div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="footer-grid">
+            <div>
+                <h4>🛒 Sarfraz Express.pk</h4>
+                <p>Best deals in Pakistan. Shop smart, save more!</p>
+            </div>
+            <div>
+                <h4>Quick Links</h4>
+                <a href="index.html">Home</a>
+                <a href="admin.html">⚙️ Admin</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 Sarfraz Express.pk. All rights reserved.</p>
+            <p>Affiliate Disclaimer: We earn commission from qualifying purchases.</p>
+        </div>
+    </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

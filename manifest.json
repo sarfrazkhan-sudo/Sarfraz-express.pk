@@ -1,0 +1,18 @@
+{
+  "name": "Sarfraz Express.pk",
+  "short_name": "SarfrazExpress",
+  "description": "Best deals in Pakistan. Shop smart, save more!",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0f0e17",
+  "theme_color": "#FF6B00",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
