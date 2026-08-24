@@ -15,19 +15,57 @@
     <div class="container">
         <div class="logo">🛒 Sarfraz Express.pk</div>
         <div class="header-right">
+            <!-- CATEGORIES BUTTON (NEW) -->
+            <button class="categories-toggle" onclick="toggleCategories()">📂</button>
             <button class="search-toggle" onclick="toggleSearch()">🔍</button>
             <button class="menu-toggle" onclick="toggleMenu()">☰</button>
         </div>
     </div>
+    
+    <!-- Search Bar -->
     <div class="search-bar" id="searchBar" style="display:none;">
         <div class="container">
             <input type="text" id="searchInput" placeholder="Search products..." oninput="searchProducts(this.value)">
             <button class="search-close" onclick="toggleSearch()">✕</button>
         </div>
     </div>
+
+    <!-- CATEGORIES POPUP (NEW) -->
+    <div class="categories-popup" id="categoriesPopup" style="display:none;">
+        <div class="container">
+            <div class="categories-grid">
+                <button class="cat-btn" onclick="selectCategory('all')">🔥 All</button>
+                <button class="cat-btn" onclick="selectCategory('consumer-electronics')">📱 Consumer Electronics</button>
+                <button class="cat-btn" onclick="selectCategory('phones-telecommunications')">📞 Phones & Telecom</button>
+                <button class="cat-btn" onclick="selectCategory('computer-office')">💻 Computer & Office</button>
+                <button class="cat-btn" onclick="selectCategory('home-appliances')">🏠 Home Appliances</button>
+                <button class="cat-btn" onclick="selectCategory('home-improvement')">🔧 Home Improvement</button>
+                <button class="cat-btn" onclick="selectCategory('home-garden')">🌿 Home & Garden</button>
+                <button class="cat-btn" onclick="selectCategory('furniture')">🪑 Furniture</button>
+                <button class="cat-btn" onclick="selectCategory('lights-lighting')">💡 Lights & Lighting</button>
+                <button class="cat-btn" onclick="selectCategory('security-protection')">🔒 Security & Protection</button>
+                <button class="cat-btn" onclick="selectCategory('automotive')">🚗 Automotive</button>
+                <button class="cat-btn" onclick="selectCategory('tools')">🔧 Tools</button>
+                <button class="cat-btn" onclick="selectCategory('sports-entertainment')">⚽ Sports & Entertainment</button>
+                <button class="cat-btn" onclick="selectCategory('toys-hobbies')">🧸 Toys & Hobbies</button>
+                <button class="cat-btn" onclick="selectCategory('office-school')">📚 Office & School Supplies</button>
+                <button class="cat-btn" onclick="selectCategory('beauty-health')">💄 Beauty & Health</button>
+                <button class="cat-btn" onclick="selectCategory('jewelry-accessories')">💍 Jewelry & Accessories</button>
+                <button class="cat-btn" onclick="selectCategory('watches')">⌚ Watches</button>
+                <button class="cat-btn" onclick="selectCategory('shoes')">👟 Shoes</button>
+                <button class="cat-btn" onclick="selectCategory('luggage-bags')">🧳 Luggage & Bags</button>
+                <button class="cat-btn" onclick="selectCategory('underwear')">🩲 Underwear</button>
+                <button class="cat-btn" onclick="selectCategory('mother-kids')">👶 Mother & Kids</button>
+                <button class="cat-btn" onclick="selectCategory('weddings-events')">💒 Weddings & Events</button>
+                <button class="cat-btn" onclick="selectCategory('food')">🍕 Food</button>
+                <button class="cat-btn" onclick="selectCategory('fashion')">👗 Fashion</button>
+                <button class="cat-btn" onclick="selectCategory('electronic-components')">🔌 Electronic Components</button>
+            </div>
+        </div>
+    </div>
 </header>
 
-<!-- Hero -->
+<!-- HERO -->
 <section class="hero">
     <div class="container">
         <h1>🛍️ Best Deals in Pakistan</h1>
@@ -35,48 +73,15 @@
     </div>
 </section>
 
-<!-- ===== ALL CATEGORIES ===== -->
-<section class="categories">
-    <div class="container">
-        <div class="category-buttons">
-            <button class="cat-btn active" onclick="showCategory('all')">🔥 All</button>
-            <button class="cat-btn" onclick="showCategory('consumer-electronics')">📱 Consumer Electronics</button>
-            <button class="cat-btn" onclick="showCategory('phones-telecommunications')">📞 Phones & Telecom</button>
-            <button class="cat-btn" onclick="showCategory('computer-office')">💻 Computer & Office</button>
-            <button class="cat-btn" onclick="showCategory('home-appliances')">🏠 Home Appliances</button>
-            <button class="cat-btn" onclick="showCategory('home-improvement')">🔧 Home Improvement</button>
-            <button class="cat-btn" onclick="showCategory('home-garden')">🌿 Home & Garden</button>
-            <button class="cat-btn" onclick="showCategory('furniture')">🪑 Furniture</button>
-            <button class="cat-btn" onclick="showCategory('lights-lighting')">💡 Lights & Lighting</button>
-            <button class="cat-btn" onclick="showCategory('security-protection')">🔒 Security & Protection</button>
-            <button class="cat-btn" onclick="showCategory('automotive')">🚗 Automotive</button>
-            <button class="cat-btn" onclick="showCategory('tools')">🔧 Tools</button>
-            <button class="cat-btn" onclick="showCategory('sports-entertainment')">⚽ Sports & Entertainment</button>
-            <button class="cat-btn" onclick="showCategory('toys-hobbies')">🧸 Toys & Hobbies</button>
-            <button class="cat-btn" onclick="showCategory('office-school')">📚 Office & School Supplies</button>
-            <button class="cat-btn" onclick="showCategory('beauty-health')">💄 Beauty & Health</button>
-            <button class="cat-btn" onclick="showCategory('jewelry-accessories')">💍 Jewelry & Accessories</button>
-            <button class="cat-btn" onclick="showCategory('watches')">⌚ Watches</button>
-            <button class="cat-btn" onclick="showCategory('shoes')">👟 Shoes</button>
-            <button class="cat-btn" onclick="showCategory('luggage-bags')">🧳 Luggage & Bags</button>
-            <button class="cat-btn" onclick="showCategory('underwear')">🩲 Underwear</button>
-            <button class="cat-btn" onclick="showCategory('mother-kids')">👶 Mother & Kids</button>
-            <button class="cat-btn" onclick="showCategory('weddings-events')">💒 Weddings & Events</button>
-            <button class="cat-btn" onclick="showCategory('food')">🍕 Food</button>
-            <button class="cat-btn" onclick="showCategory('fashion')">👗 Fashion</button>
-            <button class="cat-btn" onclick="showCategory('electronic-components')">🔌 Electronic Components</button>
-        </div>
-    </div>
-</section>
-
-<!-- Products -->
+<!-- PRODUCTS -->
 <section class="products">
     <div class="container">
         <h2 id="categoryTitle">🔥 All Products</h2>
         <div class="products-grid" id="productsGrid"></div>
     </div>
 </section>
-<!-- Footer -->
+
+<!-- FOOTER -->
 <footer>
     <div class="container">
         <div class="footer-grid">
@@ -96,6 +101,7 @@
         </div>
     </div>
 </footer>
+
 <script src="script.js"></script>
 </body>
 </html>
