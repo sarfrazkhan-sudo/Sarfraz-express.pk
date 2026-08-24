@@ -738,3 +738,30 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+// ============================================
+// CATEGORIES POPUP
+// ============================================
+function toggleCategories() {
+    const popup = document.getElementById('categoriesPopup');
+    if (popup.style.display === 'block') {
+        popup.style.display = 'none';
+    } else {
+        popup.style.display = 'block';
+    }
+}
+
+function selectCategory(category) {
+    showCategory(category);
+    document.getElementById('categoriesPopup').style.display = 'none';
+}
+
+// Close categories popup when clicking outside
+document.addEventListener('click', function(event) {
+    const popup = document.getElementById('categoriesPopup');
+    const toggleBtn = document.querySelector('.categories-toggle');
+    if (popup && toggleBtn) {
+        if (!popup.contains(event.target) && !toggleBtn.contains(event.target)) {
+            popup.style.display = 'none';
+        }
+    }
+});
