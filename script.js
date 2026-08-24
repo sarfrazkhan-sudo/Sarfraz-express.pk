@@ -358,9 +358,6 @@ function loadProductDetail() {
     }
 }
 
-// ============================================
-// SLIDESHOW FUNCTIONS
-// ============================================
 function changeSlide(direction) {
     const images = getProductImages();
     if (!images || images.length <= 1) return;
@@ -398,7 +395,34 @@ function updateSlideshow(index) {
 }
 
 // ============================================
-// ADMIN PANEL
+// CATEGORIES POPUP
+// ============================================
+function toggleCategories() {
+    var popup = document.getElementById('categoriesPopup');
+    if (popup.style.display === 'none' || popup.style.display === '') {
+        popup.style.display = 'block';
+    } else {
+        popup.style.display = 'none';
+    }
+}
+
+function selectCategory(category) {
+    showCategory(category);
+    document.getElementById('categoriesPopup').style.display = 'none';
+}
+
+document.addEventListener('click', function(event) {
+    var popup = document.getElementById('categoriesPopup');
+    var toggleBtn = document.getElementById('categoriesToggleBtn');
+    if (popup && toggleBtn) {
+        if (!popup.contains(event.target) && !toggleBtn.contains(event.target)) {
+            popup.style.display = 'none';
+        }
+    }
+});
+
+// ============================================
+// ADMIN
 // ============================================
 function verifyAdmin() {
     const password = document.getElementById('adminPassword').value;
@@ -411,12 +435,7 @@ function verifyAdmin() {
     }
 }
 
-// ============================================
-// SAVE PRODUCT - FIXED
-// ============================================
 function saveProduct() {
-    console.log('🔵 saveProduct() called');
-    
     const id = document.getElementById('editProductId').value;
     const name = document.getElementById('productName').value.trim();
     const category = document.getElementById('productCategory').value;
@@ -425,14 +444,11 @@ function saveProduct() {
     const link = document.getElementById('productLink').value.trim();
     const description = document.getElementById('productDescription').value.trim();
 
-    // ===== FIX: Better validation =====
-    // Check if originalPrice is a valid number
     if (isNaN(originalPrice) || originalPrice <= 0) {
         alert('⚠️ Please enter a valid original price (numbers only, e.g., 3008)');
         return;
     }
 
-    // Check if nowPrice is valid (if entered)
     if (nowPrice < 0 || isNaN(nowPrice)) {
         alert('⚠️ Please enter a valid now price (numbers only)');
         return;
@@ -446,7 +462,6 @@ function saveProduct() {
         return; 
     }
 
-    // Calculate discount
     let discount = 0;
     let savings = 0;
     let displayPrice = `PKR ${originalPrice.toLocaleString()}`;
@@ -508,32 +523,17 @@ function saveProduct() {
 
     if (saved) {
         alert('✅ Product ' + (id ? 'updated' : 'added') + ' successfully!');
-        
-        document.getElementById('productName').value = '';
-        document.getElementById('productOriginalPrice').value = '';
-        document.getElementById('productNowPrice').value = '';
-        document.getElementById('productLink').value = '';
-        document.getElementById('productDescription').value = '';
-        document.getElementById('productImagesInput').value = '';
-        document.getElementById('imagePreview').innerHTML = '';
-        document.getElementById('uploadStatus').textContent = '';
-        uploadedImages = [];
-        document.getElementById('editProductId').value = '';
-        
-        document.getElementById('formTitle').textContent = '➕ Add New Product';
-        document.getElementById('addProductBtn').textContent = '✅ Add Product';
-        document.getElementById('cancelEditBtn').style.display = 'none';
-        
+        clearForm();
         loadAdminProducts();
         if (document.getElementById('productsGrid')) {
             showProducts('all');
         }
+        document.getElementById('formTitle').textContent = '➕ Add New Product';
+        document.getElementById('addProductBtn').textContent = '✅ Add Product';
+        document.getElementById('cancelEditBtn').style.display = 'none';
+        document.getElementById('editProductId').value = '';
     }
 }
-
-// ============================================
-// EDIT PRODUCT
-// ============================================
 function editProduct(id) {
     const products = loadProducts();
     const product = products.find(p => p.id === id);
@@ -565,9 +565,6 @@ function editProduct(id) {
     document.getElementById('addProductForm').scrollIntoView({ behavior: 'smooth' });
 }
 
-// ============================================
-// CANCEL EDIT
-// ============================================
 function cancelEdit() {
     clearForm();
     document.getElementById('formTitle').textContent = '➕ Add New Product';
@@ -576,9 +573,6 @@ function cancelEdit() {
     document.getElementById('editProductId').value = '';
 }
 
-// ============================================
-// CLEAR FORM
-// ============================================
 function clearForm() {
     document.getElementById('productName').value = '';
     document.getElementById('productCategory').value = 'consumer-electronics';
@@ -593,9 +587,6 @@ function clearForm() {
     document.getElementById('editProductId').value = '';
 }
 
-// ============================================
-// ADMIN PRODUCTS LIST
-// ============================================
 function loadAdminProducts() {
     const products = loadProducts();
     const list = document.getElementById('adminProductList');
@@ -625,9 +616,6 @@ function loadAdminProducts() {
     }).join('');
 }
 
-// ============================================
-// DELETE PRODUCT
-// ============================================
 function deleteProduct(id) {
     if (!confirm('Delete this product?')) return;
     let products = loadProducts();
@@ -639,16 +627,6 @@ function deleteProduct(id) {
     }
 }
 
-// ============================================
-// NAVIGATION
-// ============================================
-function toggleMenu() {
-    document.querySelector('nav')?.classList.toggle('open');
-}
-
-// ============================================
-// BACKUP FUNCTIONS
-// ============================================
 function exportProducts() {
     const products = loadProducts();
     const dataStr = JSON.stringify(products, null, 2);
@@ -722,10 +700,16 @@ function getStorageInfo() {
 }
 
 // ============================================
+// NAVIGATION
+// ============================================
+function toggleMenu() {
+    document.querySelector('nav')?.classList.toggle('open');
+}
+
+// ============================================
 // PAGE LOAD
 // ============================================
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('📄 Page loaded');
     if (document.getElementById('productsGrid')) {
         showProducts('all');
     }
@@ -737,31 +721,4 @@ document.addEventListener('DOMContentLoaded', function() {
             document.querySelector('nav')?.classList.remove('open');
         });
     });
-});
-// ============================================
-// CATEGORIES POPUP
-// ============================================
-function toggleCategories() {
-    const popup = document.getElementById('categoriesPopup');
-    if (popup.style.display === 'block') {
-        popup.style.display = 'none';
-    } else {
-        popup.style.display = 'block';
-    }
-}
-
-function selectCategory(category) {
-    showCategory(category);
-    document.getElementById('categoriesPopup').style.display = 'none';
-}
-
-// Close categories popup when clicking outside
-document.addEventListener('click', function(event) {
-    const popup = document.getElementById('categoriesPopup');
-    const toggleBtn = document.querySelector('.categories-toggle');
-    if (popup && toggleBtn) {
-        if (!popup.contains(event.target) && !toggleBtn.contains(event.target)) {
-            popup.style.display = 'none';
-        }
-    }
 });
