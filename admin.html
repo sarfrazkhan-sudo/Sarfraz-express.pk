@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -29,7 +29,7 @@
 <section class="admin-panel">
     <div class="container">
         <h1>⚙️ Admin Panel</h1>
-        <p>Add, edit, or delete products.</p>
+        <p>Add products with discount expiry dates.</p>
 
         <div id="adminPasswordForm" class="admin-form">
             <h2>🔐 Admin Access</h2>
@@ -82,22 +82,36 @@
                     </select>
                 </div>
 
+                <!-- ===== PRICE ===== -->
                 <div class="form-group">
                     <label>Original Price *</label>
                     <input type="number" id="productOriginalPrice" placeholder="e.g., 3008" step="0.01" min="0">
-                    <small style="color:#FF6B00; display:block; margin-top:4px;">✅ Example: 3008 (sirf numbers, no PKR, no commas)</small>
+                    <small>✅ Example: 3008 (sirf numbers)</small>
                 </div>
 
                 <div class="form-group">
                     <label>Now Price (Optional)</label>
                     <input type="number" id="productNowPrice" placeholder="e.g., 1143" step="0.01" min="0">
-                    <small style="color:#a7a9be; display:block; margin-top:4px;">✅ Example: 1143 (leave empty if no discount)</small>
+                    <small>✅ Example: 1143 (leave empty if no discount)</small>
+                </div>
+
+                <!-- ===== DISCOUNT DATES (NEW) ===== -->
+                <div class="form-group">
+                    <label>Discount Start Date</label>
+                    <input type="datetime-local" id="discountStartDate">
+                    <small>When discount starts (optional)</small>
+                </div>
+
+                <div class="form-group">
+                    <label>Discount End Date</label>
+                    <input type="datetime-local" id="discountEndDate">
+                    <small>When discount ends (optional) — after this date, original price shows</small>
                 </div>
 
                 <div class="form-group">
                     <label>Product Images * (Multiple)</label>
                     <input type="file" id="productImagesInput" accept="image/*" multiple onchange="handleImageUpload(event)">
-                    <small>Select multiple images (hold Ctrl/Cmd to select multiple)</small>
+                    <small>Select multiple images</small>
                     <div id="imagePreview" style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;"></div>
                     <div id="uploadStatus" style="margin-top:8px; color:#a7a9be; font-size:13px;"></div>
                 </div>
@@ -122,7 +136,6 @@
                 <div id="adminProductList"></div>
             </div>
 
-            <!-- Backup/Restore Buttons -->
             <div class="admin-actions" style="display:flex; gap:10px; margin:16px 0; flex-wrap:wrap;">
                 <button class="btn btn-secondary" onclick="exportProducts()" style="flex:1;">💾 Backup</button>
                 <button class="btn btn-secondary" onclick="document.getElementById('importInput').click()" style="flex:1;">📂 Restore</button>
@@ -136,4 +149,4 @@
 
 <script src="script.js"></script>
 </body>
-                    </html>
+ </html>
