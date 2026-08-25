@@ -216,6 +216,17 @@ nav a:hover, nav a.active { color: #FF6B00; }
     font-size: 12px;
     font-weight: 700;
 }
+.expiry-badge {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    background: rgba(255, 107, 0, 0.8);
+    color: #fffffe;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 600;
+}
 
 /* ===== BUTTONS ===== */
 .btn {
@@ -618,4 +629,4 @@ footer {
     .product-title { font-size: 14px; }
     .product-price { font-size: 17px; }
     .product-info { padding: 12px 14px 16px; }
-       }
+    }
