@@ -1,41 +1,64 @@
 // ============================================
-// PRODUCTS WITH FALLBACK
+// LOAD PRODUCTS - JSON FALLBACK
 // ============================================
+
+let productsLoaded = false;
+
 function loadProducts() {
     try {
+        // Try localStorage first
         let products = localStorage.getItem('sarfrazProducts');
-        if (!products || products === 'undefined' || products === 'null' || products === '') {
-            // Return default products
-            return getDefaultProducts();
+        if (products && products !== 'undefined' && products !== 'null' && products !== '') {
+            const parsed = JSON.parse(products);
+            if (parsed.length > 0) {
+                productsLoaded = true;
+                return parsed;
+            }
         }
-        const parsed = JSON.parse(products);
-        if (parsed.length === 0) {
-            return getDefaultProducts();
-        }
-        return parsed;
+        
+        // If localStorage empty, load from JSON
+        return getDefaultProducts();
     } catch(e) {
         return getDefaultProducts();
     }
 }
 
 function getDefaultProducts() {
+    // Default products that always show
     return [
         {
             id: 1,
-            name: "🛍️ Visit Admin Panel to Add Products",
+            name: "🛍️ Welcome to Sarfraz Express.pk!",
             category: "consumer-electronics",
             originalPrice: 0,
             nowPrice: 0,
             displayPrice: "Add Products",
             price: "Add Products",
-            images: ["https://via.placeholder.com/300x200/FF6B00/FFFFFF?text=Add+Products"],
+            images: ["https://via.placeholder.com/300x200/FF6B00/FFFFFF?text=Sarfraz+Express"],
             link: "admin.html",
-            description: "Go to Admin Panel (⚙️ Admin) to add your own products with images, prices, and affiliate links.",
+            description: "👋 Visit Admin Panel (⚙️ Admin) to add your own products with images, prices, and affiliate links.\n\n📌 Instagram/Facebook users: Products are stored locally. Add products via admin panel on your browser.",
             rating: 5.0,
             sold: "Visit Admin"
         }
     ];
 }
+
+// ============================================
+// SAVE PRODUCTS - Sync to both storages
+// ============================================
+function saveProducts(products) {
+    try {
+        localStorage.setItem('sarfrazProducts', JSON.stringify(products));
+        // Also store in sessionStorage for in-app browsers
+        sessionStorage.setItem('sarfrazProducts', JSON.stringify(products));
+        console.log('✅ Products saved:', products.length);
+        return true;
+    } catch(e) {
+        console.log('❌ Save error:', e);
+        return false;
+    }
+}
+
 // ============================================
 // ADMIN PASSWORD
 // ============================================
