@@ -722,3 +722,387 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+// ============================================
+// DISCOUNT EXPIRY CHECK
+// ============================================
+function checkDiscountActive(product) {
+    // If no discount price, return false
+    if (!product.nowPrice || product.nowPrice <= 0) {
+        return false;
+    }
+    
+    // If no end date, discount is always active
+    if (!product.discountEndDate) {
+        return true;
+    }
+    
+    const now = new Date().getTime();
+    const endDate = new Date(product.discountEndDate).getTime();
+    const startDate = product.discountStartDate ? new Date(product.discountStartDate).getTime() : 0;
+    
+    // Check if current date is between start and end
+    if (startDate > 0 && now < startDate) {
+        return false; // Discount not started yet
+    }
+    
+    if (now > endDate) {
+        return false; // Discount expired
+    }
+    
+    return true;
+}
+
+// ============================================
+// GET PRODUCT PRICE (With Discount Check)
+// ============================================
+function getProductPrice(product) {
+    const isDiscountActive = checkDiscountActive(product);
+    
+    if (isDiscountActive && product.nowPrice && product.nowPrice > 0) {
+        // Show discount price
+        const discount = Math.round((1 - product.nowPrice / product.originalPrice) * 100);
+        return {
+            displayPrice: `PKR ${product.nowPrice.toLocaleString()}`,
+            originalPrice: `PKR ${product.originalPrice.toLocaleString()}`,
+            discount: discount,
+            savings: product.originalPrice - product.nowPrice,
+            isDiscounted: true
+        };
+    } else {
+        // Show original price only
+        return {
+            displayPrice: `PKR ${product.originalPrice.toLocaleString()}`,
+            originalPrice: null,
+            discount: 0,
+            savings: 0,
+            isDiscounted: false
+        };
+    }
+}
+
+// ============================================
+// SAVE PRODUCT (With Discount Dates)
+// ============================================
+function saveProduct() {
+    const id = document.getElementById('editProductId').value;
+    const name = document.getElementById('productName').value.trim();
+    const category = document.getElementById('productCategory').value;
+    const originalPrice = parseFloat(document.getElementById('productOriginalPrice').value.trim()) || 0;
+    const nowPrice = parseFloat(document.getElementById('productNowPrice').value.trim()) || 0;
+    const discountStartDate = document.getElementById('discountStartDate').value;
+    const discountEndDate = document.getElementById('discountEndDate').value;
+    const link = document.getElementById('productLink').value.trim();
+    const description = document.getElementById('productDescription').value.trim();
+
+    if (isNaN(originalPrice) || originalPrice <= 0) {
+        alert('⚠️ Please enter a valid original price (numbers only)');
+        return;
+    }
+
+    if (!name) { alert('⚠️ Please enter product name!'); return; }
+    if (!link) { alert('⚠️ Please enter affiliate link!'); return; }
+    if (!description) { alert('⚠️ Please enter description!'); return; }
+    if (uploadedImages.length === 0 && !id) { 
+        alert('⚠️ Please upload at least one image!'); 
+        return; 
+    }
+
+    let products = loadProducts();
+
+    // Calculate discount for display (only if active)
+    let discount = 0;
+    let savings = 0;
+    let displayPrice = `PKR ${originalPrice.toLocaleString()}`;
+    let priceToShow = `PKR ${originalPrice.toLocaleString()}`;
+
+    // Check if discount should be active based on dates
+    const now = new Date().getTime();
+    const start = discountStartDate ? new Date(discountStartDate).getTime() : 0;
+    const end = discountEndDate ? new Date(discountEndDate).getTime() : 0;
+    
+    let isDiscountActive = false;
+    if (nowPrice > 0 && nowPrice < originalPrice) {
+        if ((start === 0 || now >= start) && (end === 0 || now <= end)) {
+            isDiscountActive = true;
+        }
+    }
+
+    if (isDiscountActive) {
+        discount = Math.round((1 - nowPrice / originalPrice) * 100);
+        savings = originalPrice - nowPrice;
+        displayPrice = `PKR ${nowPrice.toLocaleString()}`;
+        priceToShow = `PKR ${nowPrice.toLocaleString()}`;
+    }
+
+    const productData = {
+        name: name,
+        category: category,
+        originalPrice: originalPrice,
+        nowPrice: nowPrice,
+        discountStartDate: discountStartDate || null,
+        discountEndDate: discountEndDate || null,
+        discount: discount,
+        savings: savings,
+        displayPrice: displayPrice,
+        price: priceToShow,
+        link: link,
+        description: description,
+        rating: 4.5,
+        sold: '1K+'
+    };
+
+    if (uploadedImages.length > 0) {
+        productData.images = uploadedImages.slice();
+    }
+
+    let products = loadProducts();
+
+    if (id) {
+        const index = products.findIndex(p => p.id === parseInt(id));
+        if (index !== -1) {
+            products[index] = { ...products[index], ...productData };
+            if (uploadedImages.length > 0) {
+                products[index].images = uploadedImages.slice();
+            }
+        } else {
+            alert('❌ Product not found!');
+            return;
+        }
+    } else {
+        productData.id = Date.now();
+        products.push(productData);
+    }
+
+    const saved = saveProducts(products);
+
+    if (saved) {
+        alert('✅ Product ' + (id ? 'updated' : 'added') + ' successfully!');
+        clearForm();
+        loadAdminProducts();
+        if (document.getElementById('productsGrid')) {
+            showProducts('all');
+        }
+        document.getElementById('formTitle').textContent = '➕ Add New Product';
+        document.getElementById('addProductBtn').textContent = '✅ Add Product';
+        document.getElementById('cancelEditBtn').style.display = 'none';
+        document.getElementById('editProductId').value = '';
+    }
+}
+
+// ============================================
+// UPDATE showProducts() and showCategory()
+// ============================================
+// Replace your existing showProducts() with this:
+function showProducts(category = 'all') {
+    const products = loadProducts();
+    const grid = document.getElementById('productsGrid');
+    if (!grid) return;
+
+    let filtered = products;
+    if (category !== 'all') {
+        filtered = products.filter(p => p.category === category);
+    }
+
+    const title = document.getElementById('categoryTitle');
+    if (title) {
+        title.textContent = categoryNames[category] || '🔥 All Products';
+    }
+
+    if (filtered.length === 0) {
+        grid.innerHTML = '<p style="color:#a7a9be; grid-column:1/-1; text-align:center; padding:30px 0;">No products available.</p>';
+        return;
+    }
+
+    grid.innerHTML = filtered.map(p => {
+        // Check discount expiry
+        const priceInfo = getProductPrice(p);
+        const discountBadge = priceInfo.isDiscounted ? `<span class="discount-badge">-${priceInfo.discount}%</span>` : '';
+        // Show expiry badge if discount has end date
+        let expiryBadge = '';
+        if (p.discountEndDate && priceInfo.isDiscounted) {
+            const endDate = new Date(p.discountEndDate);
+            const daysLeft = Math.ceil((endDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
+            if (daysLeft > 0 && daysLeft <= 7) {
+                expiryBadge = `<span class="expiry-badge">⏳ ${daysLeft} days left</span>`;
+            }
+        }
+        return `
+            <div class="product-card" onclick="viewProduct(${p.id})">
+                <img src="${p.images && p.images[0] ? p.images[0] : 'https://via.placeholder.com/300x200/2d2b44/FFFFFF?text=No+Image'}" alt="${p.name}">
+                <div class="category">${categoryNames[p.category] || p.category}</div>
+                <h3>${p.name}</h3>
+                <div class="price">${priceInfo.displayPrice}</div>
+                ${discountBadge}
+                ${expiryBadge}
+            </div>
+        `;
+    }).join('');
+}
+
+// ============================================
+// UPDATE loadProductDetail()
+// ============================================
+// Replace your existing loadProductDetail() with this:
+function loadProductDetail() {
+    const id = parseInt(localStorage.getItem('viewProductId') || 1);
+    const products = loadProducts();
+    const product = products.find(p => p.id === id);
+
+    if (!product) {
+        document.getElementById('productDetail').innerHTML = '<p style="text-align:center;padding:40px 0;">Product not found.</p>';
+        return;
+    }
+
+    if (slideInterval) {
+        clearInterval(slideInterval);
+        slideInterval = null;
+    }
+
+    const images = product.images && product.images.length > 0 ? product.images : ['https://via.placeholder.com/600x400/2d2b44/FFFFFF?text=No+Image'];
+
+    let imagesHTML = '';
+
+    if (images.length === 1) {
+        imagesHTML = `
+            <div class="product-main-image">
+                <img src="${images[0]}" alt="${product.name}" onerror="this.src='https://via.placeholder.com/600x400/2d2b44/FFFFFF?text=No+Image'">
+            </div>
+        `;
+    } else {
+        imagesHTML = `
+            <div class="product-slideshow">
+                <div class="slideshow-container">
+                    <div class="slideshow-track" id="slideshowTrack">
+                        ${images.map(img => `
+                            <div class="slideshow-slide">
+                                <img src="${img}" alt="${product.name}" onerror="this.src='https://via.placeholder.com/600x400/2d2b44/FFFFFF?text=No+Image'">
+                            </div>
+                        `).join('')}
+                    </div>
+                    <button class="slideshow-btn prev" onclick="changeSlide(-1)">❮</button>
+                    <button class="slideshow-btn next" onclick="changeSlide(1)">❯</button>
+                </div>
+                <div class="slideshow-dots" id="slideshowDots">
+                    ${images.map((_, i) => `
+                        <span class="dot ${i === 0 ? 'active' : ''}" onclick="goToSlide(${i})"></span>
+                    `).join('')}
+                </div>
+                <div class="slideshow-counter" id="slideshowCounter">1 / ${images.length}</div>
+            </div>
+        `;
+        currentSlide = 0;
+        if (images.length > 1) {
+            slideInterval = setInterval(() => {
+                changeSlide(1);
+            }, 4000);
+        }
+    }
+
+    // Check discount expiry
+    const priceInfo = getProductPrice(product);
+    
+    let priceHTML = '';
+    if (priceInfo.isDiscounted) {
+        priceHTML = `
+            <div class="product-price-section">
+                <div class="product-price">${priceInfo.displayPrice}</div>
+                <div class="product-original-price">${priceInfo.originalPrice}</div>
+                <div class="product-discount">-${priceInfo.discount}%</div>
+            </div>
+            <div class="product-savings">Save PKR ${priceInfo.savings.toLocaleString()}</div>
+        `;
+        // Show expiry info
+        if (product.discountEndDate) {
+            const endDate = new Date(product.discountEndDate);
+            const daysLeft = Math.ceil((endDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
+            if (daysLeft > 0) {
+                priceHTML += `<div style="color:#FF6B00; font-size:13px; margin-top:4px;">⏳ Discount ends in ${daysLeft} days</div>`;
+            }
+        }
+    } else {
+        priceHTML = `
+            <div class="product-price-section">
+                <div class="product-price">PKR ${product.originalPrice.toLocaleString()}</div>
+            </div>
+        `;
+        // Show if discount expired
+        if (product.discountEndDate && product.nowPrice > 0) {
+            priceHTML += `<div style="color:#FF6B00; font-size:13px; margin-top:4px;">⏳ Discount expired. Original price shown.</div>`;
+        }
+    }
+
+    const rating = product.rating || 4.5;
+    const sold = product.sold || '1K+';
+    const fullStars = Math.floor(rating);
+    const halfStar = rating % 1 >= 0.5 ? 1 : 0;
+    let starsHTML = '';
+    for (let i = 0; i < fullStars; i++) starsHTML += '⭐';
+    if (halfStar) starsHTML += '⭐';
+    for (let i = 0; i < 5 - fullStars - halfStar; i++) starsHTML += '☆';
+
+    document.getElementById('productDetail').innerHTML = `
+        ${imagesHTML}
+        <div class="product-info">
+            <div class="product-category">${categoryNames[product.category] || product.category}</div>
+            <h1 class="product-title">${product.name}</h1>
+            <div class="product-rating">
+                <span class="stars">${starsHTML}</span>
+                <span class="rating-text">${rating} | ${sold} sold</span>
+            </div>
+            ${priceHTML}
+            <div class="product-description">
+                <p>${product.description}</p>
+            </div>
+            <div class="product-actions">
+                <a href="${product.link}" target="_blank" class="btn btn-primary btn-visit">🛒 Visit Store</a>
+            </div>
+        </div>
+    `;
+
+    if (images.length > 1) {
+        updateSlideshow(0);
+    }
+}
+
+// ============================================
+// UPDATE loadAdminProducts()
+// ============================================
+function loadAdminProducts() {
+    const products = loadProducts();
+    const list = document.getElementById('adminProductList');
+    if (!list) return;
+
+    if (products.length === 0) {
+        list.innerHTML = '<p style="color:#a7a9be;">No products yet.</p>';
+        return;
+    }
+
+    list.innerHTML = products.map(p => {
+        const priceInfo = getProductPrice(p);
+        let statusBadge = '';
+        if (p.discountEndDate && priceInfo.isDiscounted) {
+            const endDate = new Date(p.discountEndDate);
+            const daysLeft = Math.ceil((endDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
+            if (daysLeft > 0 && daysLeft <= 7) {
+                statusBadge = `<span style="color:#FFD93D;font-size:11px;">⏳ ${daysLeft}d left</span>`;
+            }
+        } else if (p.discountEndDate && !priceInfo.isDiscounted && p.nowPrice > 0) {
+            statusBadge = `<span style="color:#FF6B6B;font-size:11px;">⏳ Expired</span>`;
+        }
+        return `
+            <div class="admin-product-item">
+                <img src="${p.images && p.images[0] ? p.images[0] : 'https://via.placeholder.com/50x50/2d2b44/FFFFFF?text=No+Image'}" alt="${p.name}">
+                <div class="info">
+                    <h4>${p.name}</h4>
+                    <p>${priceInfo.displayPrice} • ${categoryNames[p.category] || p.category}</p>
+                    ${statusBadge}
+                    ${priceInfo.isDiscounted ? `<span style="color:#00ffc8;font-size:12px;">-${priceInfo.discount}% off</span>` : ''}
+                </div>
+                <div class="actions">
+                    <button class="edit-btn" onclick="editProduct(${p.id})">✏️ Edit</button>
+                    <button class="delete-btn" onclick="deleteProduct(${p.id})">🗑️ Delete</button>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
