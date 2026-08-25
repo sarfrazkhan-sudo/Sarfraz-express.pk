@@ -1,4 +1,42 @@
 // ============================================
+// PRODUCTS WITH FALLBACK
+// ============================================
+function loadProducts() {
+    try {
+        let products = localStorage.getItem('sarfrazProducts');
+        if (!products || products === 'undefined' || products === 'null' || products === '') {
+            // Return default products
+            return getDefaultProducts();
+        }
+        const parsed = JSON.parse(products);
+        if (parsed.length === 0) {
+            return getDefaultProducts();
+        }
+        return parsed;
+    } catch(e) {
+        return getDefaultProducts();
+    }
+}
+
+function getDefaultProducts() {
+    return [
+        {
+            id: 1,
+            name: "🛍️ Visit Admin Panel to Add Products",
+            category: "consumer-electronics",
+            originalPrice: 0,
+            nowPrice: 0,
+            displayPrice: "Add Products",
+            price: "Add Products",
+            images: ["https://via.placeholder.com/300x200/FF6B00/FFFFFF?text=Add+Products"],
+            link: "admin.html",
+            description: "Go to Admin Panel (⚙️ Admin) to add your own products with images, prices, and affiliate links.",
+            rating: 5.0,
+            sold: "Visit Admin"
+        }
+    ];
+}
+// ============================================
 // ADMIN PASSWORD
 // ============================================
 const ADMIN_PASSWORD = 'sarfrazkhan778800.pk';
